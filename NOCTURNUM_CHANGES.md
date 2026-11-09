@@ -24,3 +24,5 @@ Open question: `MODRINTH_LAUNCHER_META_URL` (launcher-meta.modrinth.com) is stil
 
 | 9 | `packages/app-lib/src/lib.rs` | User-Agent `Nocturnum/0.1 (os)` instead of the Modrinth one | 3.3 |
 | 10 | `packages/app-lib/src/api/minecraft_auth.rs` | `add_test_account` (debug builds only, for the automatic launch test) | tests |
+
+| 11 | `packages/app-lib/src/launcher/args.rs` | no `-javaagent` (quick play of kind `Injected` is not supported), `-Xms` = `-Xmx` | 3.6, 7.3 |

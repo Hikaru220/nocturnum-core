@@ -152,6 +152,8 @@ pub fn get_jvm_arguments(
         parsed_arguments.push(class_paths.to_string());
     }
 
+    // NOCTURNUM: fixed heap, -Xms = -Xmx (spec 3.6)
+    parsed_arguments.push(format!("-Xms{}M", memory.maximum));
     parsed_arguments.push(format!("-Xmx{}M", memory.maximum));
 
     if let Some(LoggingConfiguration::Log4j2Xml { argument, file }) = log_config
@@ -161,15 +163,9 @@ pub fn get_jvm_arguments(
         parsed_arguments.push(argument.replace("${path}", &full_path));
     }
 
-    parsed_arguments.push(format!(
-        "-javaagent:{}",
-        canonicalize(agent_path)
-            .context(crate::ErrorKind::LauncherError(format!(
-                "specified java agent path {} does not exist",
-                agent_path.display()
-            )))?
-            .to_string_lossy()
-    ));
+    // NOCTURNUM: no -javaagent (forbidden in release, spec 3.6 / 7.3). Quick play of the `Injected`
+    // kind needed the agent; those few game versions simply start without joining the server.
+    let _ = agent_path;
 
     parsed_arguments
         .push(format!("-Dmodrinth.internal.ipc.host={}", ipc_addr.ip()));
