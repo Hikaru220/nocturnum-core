@@ -14,3 +14,8 @@ Modrinth branding assets (.idea/icon.svg, .github/assets/) are removed, none is 
 | 6 | `state/nocturnum_auth.rs` (new), `state/minecraft_auth.rs`, `api/minecraft_auth.rs` | sign-in with Nocturnum client id, device code flow, XSTS/Mojang errors as codes, silent refresh; SISU flow of the official launcher no longer used | 3.1 |
 
 Planned: data folder `%APPDATA%\Nocturnum` (3.3), game log reader (3.4), remove modules `mr_auth`, `users`, `friends`, `reports`, `upload`, `onboarding_checklist`, `tunnel` (2.2).
+
+| 7 | `packages/app-lib/src/state/mod.rs` | no Modrinth account refresh, no friends websocket at startup | 2.2 |
+
+Data folder: the app identifier passed to `State::init("Nocturnum")` gives the Nocturnum folder under the user data dir (no core change).
+Open question: `MODRINTH_LAUNCHER_META_URL` (launcher-meta.modrinth.com) is still used for version lists; clarify with Modrinth or replace with Mojang/Fabric meta (spec 3.3).
