@@ -231,26 +231,14 @@ impl State {
                 ),
                 refresh_all_instances(state),
                 Settings::migrate(&state.pool),
-                ModrinthCredentials::refresh_all(
-                    &state.pool,
-                    &state.fetch_semaphore,
-                ),
+                // NOCTURNUM: no Modrinth account, so nothing to refresh
             );
 
             if let Err(e) = res {
                 tracing::error!("Error running discord RPC: {e}");
             }
 
-            let _ = state
-                .presence
-                .friends_socket
-                .connect(
-                    &state.pool,
-                    &state.api_semaphore,
-                    &state.process_manager,
-                )
-                .await;
-            let _ = FriendsSocket::socket_loop(Arc::clone(state)).await;
+            // NOCTURNUM: no Modrinth friends socket (no connection to wss://api.modrinth.com)
         });
 
         Ok(())
