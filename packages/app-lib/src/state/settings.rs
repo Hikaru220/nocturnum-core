@@ -166,10 +166,10 @@ impl Settings {
             friends_online_collapsed: res.friends_online_collapsed == 1,
             friends_offline_collapsed: res.friends_offline_collapsed == 1,
             friends_pending_collapsed: res.friends_pending_collapsed == 1,
-            telemetry: res.telemetry == 1,
+            telemetry: false, // NOCTURNUM: no telemetry, ignores the stored value
             discord_rpc: res.discord_rpc == 1,
             developer_mode: res.developer_mode == 1,
-            personalized_ads: res.personalized_ads == 1,
+            personalized_ads: false, // NOCTURNUM: no ads
             extra_launch_args: res
                 .extra_launch_args
                 .as_ref()

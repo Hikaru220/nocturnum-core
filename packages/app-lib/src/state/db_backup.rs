@@ -182,7 +182,7 @@ pub fn app_db_backup_dir() -> crate::Result<PathBuf> {
         ),
     )?;
 
-    Ok(base.join("Modrinth").join("Backups").join("app-db"))
+    Ok(base.join("Nocturnum").join("Backups").join("app-db"))
 }
 
 async fn has_user_tables(conn: &mut SqliteConnection) -> crate::Result<bool> {

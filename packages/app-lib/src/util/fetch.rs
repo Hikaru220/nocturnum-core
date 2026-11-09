@@ -26,6 +26,7 @@ use tokio::sync::Semaphore;
 use tokio::{fs::File, io::AsyncReadExt, io::AsyncWriteExt};
 use tracing::{debug, info, warn};
 
+#[allow(dead_code)] // NOCTURNUM: analytics header kept only to keep the diff small
 pub const DOWNLOAD_META_HEADER: &str = "modrinth-download-meta";
 
 #[derive(Debug, derive_more::Display, Clone, Copy, Serialize, Deserialize)]
@@ -47,6 +48,7 @@ pub struct DownloadMeta {
 }
 
 impl DownloadMeta {
+    #[allow(dead_code)]
     pub fn to_header_value(&self) -> String {
         serde_json::to_string(self).unwrap_or_default()
     }
@@ -951,8 +953,9 @@ async fn fetch_advanced_with_target(
         None
     };
 
-    let download_meta_header = download_meta
-        .map(|m| (DOWNLOAD_META_HEADER.to_string(), m.to_header_value()));
+    // NOCTURNUM: download analytics are never sent to Modrinth (see NOCTURNUM_CHANGES.md)
+    let _ = download_meta;
+    let download_meta_header: Option<(String, String)> = None;
 
     for attempt in 1..=(FETCH_ATTEMPTS + 1) {
         if let Some(fence_key) = fence_key
@@ -1179,6 +1182,7 @@ pub async fn fetch_mirrors(
 
 /// Posts a JSON to a URL
 #[tracing::instrument(skip(json_body, semaphore))]
+#[allow(dead_code)]
 pub async fn post_json(
     url: &str,
     json_body: serde_json::Value,

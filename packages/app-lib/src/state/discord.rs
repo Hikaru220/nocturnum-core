@@ -2,7 +2,7 @@ use std::sync::{Arc, atomic::AtomicBool};
 
 use discord_rich_presence::{
     DiscordIpc, DiscordIpcClient,
-    activity::{Activity, Assets},
+    activity::{Activity, Assets, Button},
 };
 use sqlx::SqlitePool;
 use tokio::sync::RwLock;
@@ -18,7 +18,7 @@ impl DiscordGuard {
     /// Initialize discord IPC client, and attempt to connect to it
     /// If it fails, it will still return a DiscordGuard, but the client will be unconnected
     pub fn init() -> crate::Result<DiscordGuard> {
-        let dipc = DiscordIpcClient::new("1123683254248148992");
+        let dipc = DiscordIpcClient::new("1565258293826297997") /* NOCTURNUM application id */;
 
         Ok(DiscordGuard {
             client: Arc::new(RwLock::new(dipc)),
@@ -71,11 +71,18 @@ impl DiscordGuard {
             return Ok(());
         }
 
-        let activity = Activity::new().state(msg).assets(
-            Assets::new()
-                .large_image("modrinth_simple")
-                .large_text("Modrinth Logo"),
-        );
+        // NOCTURNUM: own assets and one download button (max 2 buttons, label up to 32 chars)
+        let activity = Activity::new()
+            .state(msg)
+            .assets(
+                Assets::new()
+                    .large_image("nocturnum")
+                    .large_text("Nocturnum"),
+            )
+            .buttons(vec![Button::new(
+                "Скачать Nocturnum",
+                "https://t.me/Nocturnum_Launcher",
+            )]);
 
         // Attempt to set the activity
         // If the existing connection fails, attempt to reconnect and try again
