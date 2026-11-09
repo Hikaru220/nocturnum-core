@@ -21,3 +21,6 @@ Data folder: the app identifier passed to `State::init("Nocturnum")` gives the N
 Open question: `MODRINTH_LAUNCHER_META_URL` (launcher-meta.modrinth.com) is still used for version lists; clarify with Modrinth or replace with Mojang/Fabric meta (spec 3.3).
 
 | 8 | `packages/app-lib/src/api/instance/run.rs`, `api/instance.rs` | new `run_with_account` (launch with a chosen account, several clients at once) | 4 |
+
+| 9 | `packages/app-lib/src/lib.rs` | User-Agent `Nocturnum/0.1 (os)` instead of the Modrinth one | 3.3 |
+| 10 | `packages/app-lib/src/api/minecraft_auth.rs` | `add_test_account` (debug builds only, for the automatic launch test) | tests |

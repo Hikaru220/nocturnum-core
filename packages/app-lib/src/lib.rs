@@ -39,12 +39,6 @@ pub fn install_crypto_provider() {
 }
 
 pub fn launcher_user_agent() -> String {
-    const LAUNCHER_BASE_USER_AGENT: &str =
-        concat!("modrinth/theseus/", env!("CARGO_PKG_VERSION"),);
-
-    format!(
-        "{} ({}; support@modrinth.com)",
-        LAUNCHER_BASE_USER_AGENT,
-        std::env::consts::OS
-    )
+    // NOCTURNUM: own User-Agent (spec 3.3), not the one of Modrinth App
+    format!("Nocturnum/0.1 ({})", std::env::consts::OS)
 }
