@@ -199,6 +199,7 @@ pub use self::install::{
     get_shared_instance_install_preview,
     get_shared_instance_invite_install_preview,
     get_shared_instance_update_preview, install_shared_instance,
+    refresh_shared_instance_lock, refresh_shared_instance_locks,
     update_shared_instance,
 };
 pub use self::invites::{
@@ -223,11 +224,11 @@ pub use self::types::{
     SharedInstanceExternalFilePreview, SharedInstanceInstallPreview,
     SharedInstanceInvite, SharedInstanceInviteCreator,
     SharedInstanceInviteInstallPreview, SharedInstanceInviteLink,
-    SharedInstanceJoinType, SharedInstancePublishFile,
-    SharedInstancePublishPreview, SharedInstanceRelinkBlocker,
-    SharedInstanceRelinkPreview, SharedInstanceUpdateDiff,
-    SharedInstanceUpdateDiffType, SharedInstanceUpdatePreview,
-    SharedInstanceUser, SharedInstanceUsers,
+    SharedInstanceJoinType, SharedInstanceLockStatus,
+    SharedInstancePublishFile, SharedInstancePublishPreview,
+    SharedInstanceRelinkBlocker, SharedInstanceRelinkPreview,
+    SharedInstanceUpdateDiff, SharedInstanceUpdateDiffType,
+    SharedInstanceUpdatePreview, SharedInstanceUser, SharedInstanceUsers,
 };
 
 pub async fn can_active_user_use_shared_instances() -> crate::Result<bool> {
