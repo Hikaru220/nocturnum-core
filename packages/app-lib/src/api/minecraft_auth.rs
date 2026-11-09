@@ -85,3 +85,26 @@ pub async fn users() -> crate::Result<Vec<Credentials>> {
     let users = Credentials::get_all(&state.pool).await?;
     Ok(users.into_iter().map(|x| x.1).collect())
 }
+
+/// NOCTURNUM: test-only hook, compiled into debug builds only (never in a release): adds a throw-away
+/// account so the automatic launch test can start the game without a licence.
+#[cfg(debug_assertions)]
+pub async fn add_test_account(
+    name: &str,
+    id: uuid::Uuid,
+) -> crate::Result<()> {
+    let state = State::get().await?;
+    let mut credentials = Credentials {
+        offline_profile: crate::state::MinecraftProfile {
+            id,
+            name: name.to_string(),
+            ..Default::default()
+        },
+        access_token: "0".to_string(),
+        refresh_token: String::new(),
+        expires: chrono::Utc::now() + chrono::Duration::days(365),
+        active: true,
+    };
+    credentials.upsert(&state.pool).await?;
+    Ok(())
+}
