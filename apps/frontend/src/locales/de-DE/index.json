@@ -93,7 +93,7 @@
     "message": "{hours} Std."
   },
   "analytics.chart.controls.active-count": {
-    "message": "{count} aktiv"
+    "message": "{count} online"
   },
   "analytics.chart.controls.annotations": {
     "message": "Anmerkungen"
@@ -150,7 +150,7 @@
     "message": "Details zur Analyse der Monetarisierung"
   },
   "analytics.chart.legend.previous-period-suffix": {
-    "message": "{name} (Vorherig)"
+    "message": "{name} (Vorherige)"
   },
   "analytics.chart.render-limit.description": {
     "message": "Das Anzeigen aller ausgewählten Zeilen aus der Tabelle kann die Leistung der Seite beeinträchtigen."
@@ -348,7 +348,7 @@
     "message": "Projektstatus geändert"
   },
   "analytics.project-event.project-unlisted": {
-    "message": "Projekt entlistet"
+    "message": "Projekt ungelistet"
   },
   "analytics.project-event.version-released": {
     "message": "{version} veröffentlicht"
@@ -429,7 +429,7 @@
     "message": "Spielzeit"
   },
   "analytics.stat.playtime-hours": {
-    "message": "{hours} Std"
+    "message": "{hours} Std."
   },
   "analytics.stat.previous-period-comparison": {
     "message": "im Vergleich zum vorherigen Zeitraum"
@@ -2232,7 +2232,7 @@
     "message": "Dieser Inhaltstyp kann über Entdecken nicht auf einem Server installiert werden."
   },
   "discover.install.heading.reset-modpack": {
-    "message": "Modpack zur Installation nach dem Zurücksetzen auswählen"
+    "message": "Inhalte für die Installation nach dem Zurücksetzen auswählen"
   },
   "discover.seo.description": {
     "message": "Durchsuche und entdecke auf Modrinth Tausende von {projectType} für Minecraft mit sofortigen, präzisen Suchergebnissen. Mit unseren Filtern findest du schnell die besten {projectType} für Minecraft."
@@ -4508,6 +4508,9 @@
   "project.settings.license.custom": {
     "message": "Benutzerdefiniert"
   },
+  "project.settings.license.custom-name-invalid": {
+    "message": "Benutzerdefinierte Lizenznamen dürfen nur Buchstaben, Zahlen, Punkte und Bindestriche enthalten."
+  },
   "project.settings.license.custom-name-required": {
     "message": "Gib einen Namen für deine benutzerdefinierte Lizenz ein."
   },
@@ -5353,6 +5356,24 @@
   },
   "servers.purchase.step.plan.per-month-billing": {
     "message": "/ Monat{interval, select, monthly {} other {, {interval, select, quarterly {vierteljährlich} yearly {jährlich} other {{interval}}} abgerechnet}}"
+  },
+  "servers.sharing-update.notification.description": {
+    "message": "Lade Freunde ein, mit einer Instanz zu spielen, die von deinem Server verwaltet wird."
+  },
+  "servers.sharing-update.notification.dismiss": {
+    "message": "Ausblenden"
+  },
+  "servers.sharing-update.notification.purchase-description": {
+    "message": "Hol dir einen Server und lade Freunde ein, mit einer Instanz zu spielen, die von ihm verwaltet wird."
+  },
+  "servers.sharing-update.notification.title": {
+    "message": "Server mit Freunden teilen"
+  },
+  "servers.sharing-update.notification.view-update": {
+    "message": "Update anzeigen"
+  },
+  "servers.sharing-update.web-description": {
+    "message": "Du kannst deinen Server jetzt direkt mit Freunden teilen. Wenn sie in der Modrinth App annehmen, erstellen wir für sie eine Instanz, die von deinem Server verwaltet wird."
   },
   "settings.account.button.complete-setup": {
     "message": "Einrichtung abschließen"
@@ -6340,6 +6361,9 @@
   },
   "version.download.download-dependency": {
     "message": "Wähle eine Version zum Herunterladen aus"
+  },
+  "version.download.more-options": {
+    "message": "Weitere Downloadoptionen"
   },
   "version.download.no-primary-file": {
     "message": "Fehler: Keine primäre Datei gefunden"

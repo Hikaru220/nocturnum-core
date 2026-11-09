@@ -2232,7 +2232,7 @@
     "message": "Dieser Inhaltstyp kann nicht über Entdecken auf einem Server installiert werden."
   },
   "discover.install.heading.reset-modpack": {
-    "message": "Modpack zum installieren nach dem Reset auswählen"
+    "message": "Inhalte für die Installation nach dem Zurücksetzen auswählen"
   },
   "discover.seo.description": {
     "message": "Durchsuche und durchstöbere Tausende von Minecraft-{projectType} auf Modrinth mit sofortigen, präzisen Suchergebnissen. Unsere Filter helfen dir, schnell die besten Minecraft-{projectType} zu finden."
@@ -4508,6 +4508,9 @@
   "project.settings.license.custom": {
     "message": "Benutzerdefiniert"
   },
+  "project.settings.license.custom-name-invalid": {
+    "message": "Benutzerdefinierte Lizenznamen dürfen nur Buchstaben, Zahlen, Punkte und Bindestriche enthalten."
+  },
   "project.settings.license.custom-name-required": {
     "message": "Gib einen Namen für deine benutzerdefinierte Lizenz ein."
   },
@@ -5353,6 +5356,24 @@
   },
   "servers.purchase.step.plan.per-month-billing": {
     "message": "/ Monat{interval, select, monthly {} other {, {interval, select, quarterly {vierteljährlich} yearly {jährlich} other {{interval}}} abgerechnet}}"
+  },
+  "servers.sharing-update.notification.description": {
+    "message": "Lade Freunde ein, mit einer Instanz zu spielen, die von deinem Server verwaltet wird."
+  },
+  "servers.sharing-update.notification.dismiss": {
+    "message": "Ausblenden"
+  },
+  "servers.sharing-update.notification.purchase-description": {
+    "message": "Hol dir einen Server und lade Freunde ein, mit einer Instanz zu spielen, die von ihm verwaltet wird."
+  },
+  "servers.sharing-update.notification.title": {
+    "message": "Server mit Freunden teilen"
+  },
+  "servers.sharing-update.notification.view-update": {
+    "message": "Update anzeigen"
+  },
+  "servers.sharing-update.web-description": {
+    "message": "Du kannst deinen Server jetzt direkt mit Freunden teilen. Wenn sie in der Modrinth App annehmen, erstellen wir für sie eine Instanz, die von deinem Server verwaltet wird."
   },
   "settings.account.button.complete-setup": {
     "message": "Einrichtung abschliessen"
@@ -6340,6 +6361,9 @@
   },
   "version.download.download-dependency": {
     "message": "Wähle eine Version zum Herunterladen aus"
+  },
+  "version.download.more-options": {
+    "message": "Weitere Downloadoptionen"
   },
   "version.download.no-primary-file": {
     "message": "Fehler: Keine primäre Datei gefunden"
