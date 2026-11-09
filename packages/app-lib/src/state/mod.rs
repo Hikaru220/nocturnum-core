@@ -42,6 +42,7 @@ mod discord;
 pub use self::discord::*;
 
 mod minecraft_auth;
+pub mod nocturnum_auth; // NOCTURNUM: sign-in with our own client id
 pub use self::minecraft_auth::*;
 
 pub mod minecraft_skins;

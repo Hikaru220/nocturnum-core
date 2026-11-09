@@ -11,5 +11,6 @@ Modrinth branding assets (.idea/icon.svg, .github/assets/) are removed, none is 
 | 3 | `packages/app-lib/src/state/settings.rs` | `telemetry` and `personalized_ads` always false | 3.2 |
 | 4 | `packages/app-lib/src/state/db_backup.rs` | backups go to `Nocturnum/Backups` | 3.3 |
 | 5 | `packages/app-lib/src/state/discord.rs` | own Discord application id, own assets, one button (t.me/Nocturnum_Launcher) | 3.3 |
+| 6 | `state/nocturnum_auth.rs` (new), `state/minecraft_auth.rs`, `api/minecraft_auth.rs` | sign-in with Nocturnum client id, device code flow, XSTS/Mojang errors as codes, silent refresh; SISU flow of the official launcher no longer used | 3.1 |
 
-Planned: Microsoft sign-in with the Nocturnum client id (3.1), data folder `%APPDATA%\Nocturnum` (3.3), game log reader (3.4), remove modules `mr_auth`, `users`, `friends`, `reports`, `upload`, `onboarding_checklist`, `tunnel` (2.2).
+Planned: data folder `%APPDATA%\Nocturnum` (3.3), game log reader (3.4), remove modules `mr_auth`, `users`, `friends`, `reports`, `upload`, `onboarding_checklist`, `tunnel` (2.2).

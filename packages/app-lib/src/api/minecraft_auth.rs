@@ -22,30 +22,18 @@ pub async fn check_reachable() -> crate::Result<()> {
 
 #[tracing::instrument]
 pub async fn begin_login() -> crate::Result<MinecraftLoginFlow> {
-    let state = State::get().await?;
-
-    crate::state::login_begin(&state.pool).await
+    // NOCTURNUM: device code flow, nothing to pass
+    crate::state::login_begin().await
 }
 
 #[tracing::instrument]
 pub async fn finish_login(
-    code: &str,
     flow: MinecraftLoginFlow,
 ) -> crate::Result<Credentials> {
     let state = State::get().await?;
 
-    let credentials =
-        crate::state::login_finish(code, flow, &state.pool).await?;
-
-    if let Err(error) =
-        crate::onboarding_checklist::mark_logged_into_minecraft().await
-    {
-        tracing::warn!(
-            "Failed to mark Minecraft login in onboarding checklist: {error}"
-        );
-    }
-
-    Ok(credentials)
+    // NOCTURNUM: waits until the player has entered the code
+    crate::state::login_finish(flow, &state.pool).await
 }
 
 #[tracing::instrument]

@@ -36,6 +36,8 @@ use uuid::Uuid;
 
 #[derive(Debug, Clone, Copy)]
 pub enum MinecraftAuthStep {
+    DeviceCode,
+    XboxLive,
     GetDeviceToken,
     SisuAuthenticate,
     GetOAuthToken,
@@ -105,6 +107,26 @@ impl MinecraftAuthenticationError {
             } => "minecraft_auth_clock_out_of_sync",
             Self::DeserializeResponse {
                 step: MinecraftAuthStep::MinecraftToken,
+                status_code: StatusCode::FORBIDDEN,
+                raw,
+                ..
+            } if raw.contains("Invalid app registration") => {
+                "minecraft_auth_app_not_approved"
+            }
+            Self::DeserializeResponse {
+                step: MinecraftAuthStep::DeviceCode,
+                raw,
+                ..
+            } if raw.contains("expired_token") => "minecraft_auth_code_expired",
+            Self::DeserializeResponse {
+                step: MinecraftAuthStep::DeviceCode,
+                raw,
+                ..
+            } if raw.contains("authorization_declined") => {
+                "minecraft_auth_declined"
+            }
+            Self::DeserializeResponse {
+                step: MinecraftAuthStep::MinecraftToken,
                 status_code: StatusCode::TOO_MANY_REQUESTS,
                 ..
             } => "minecraft_auth_rate_limited",
@@ -170,89 +192,36 @@ impl MinecraftAuthenticationError {
     }
 }
 
-#[derive(Serialize, Deserialize, Debug)]
-pub struct MinecraftLoginFlow {
-    pub verifier: String,
-    pub challenge: String,
-    pub session_id: String,
-    pub auth_request_uri: String,
-}
+/// NOCTURNUM: the code to show to the player (microsoft.com/link) and what is needed to finish the login.
+pub use super::nocturnum_auth::DeviceCodeFlow as MinecraftLoginFlow;
 
+/// NOCTURNUM: step 1 of the device code sign-in (replaces the SISU flow of the Minecraft launcher).
 #[tracing::instrument]
-pub async fn login_begin(
-    exec: impl sqlx::Executor<'_, Database = sqlx::Sqlite> + Copy,
-) -> crate::Result<MinecraftLoginFlow> {
-    let (pair, current_date) =
-        DeviceTokenPair::refresh_and_get_device_token(Utc::now(), exec).await?;
-
-    let verifier = generate_oauth_challenge();
-    let result = sha2::Sha256::digest(&verifier);
-    let challenge = BASE64_URL_SAFE_NO_PAD.encode(result);
-
-    match sisu_authenticate(
-        &pair.token.token,
-        &challenge,
-        &pair.key,
-        current_date,
-    )
-    .await
-    {
-        Ok((session_id, redirect_uri)) => {
-            return Ok(MinecraftLoginFlow {
-                verifier,
-                challenge,
-                session_id,
-                auth_request_uri: redirect_uri.value.msa_oauth_redirect,
-            });
-        }
-        Err(err) => return Err(err.into()),
-    }
+pub async fn login_begin() -> crate::Result<MinecraftLoginFlow> {
+    Ok(super::nocturnum_auth::device_code_begin().await?)
 }
 
+/// NOCTURNUM: step 2. Waits until the code is entered, then stores the credentials.
+/// Dropping the future cancels the sign-in.
 #[tracing::instrument]
 pub async fn login_finish(
-    code: &str,
     flow: MinecraftLoginFlow,
     exec: impl sqlx::Executor<'_, Database = sqlx::Sqlite> + Copy,
 ) -> crate::Result<Credentials> {
-    let (pair, _) =
-        DeviceTokenPair::refresh_and_get_device_token(Utc::now(), exec).await?;
-
-    let oauth_token = oauth_token(code, &flow.verifier).await?;
-    let sisu_authorize = sisu_authorize(
-        Some(&flow.session_id),
-        &oauth_token.value.access_token,
-        &pair.token.token,
-        &pair.key,
-        oauth_token.date,
-    )
-    .await?;
-
-    let xbox_token = xsts_authorize(
-        sisu_authorize.value,
-        &pair.token.token,
-        &pair.key,
-        sisu_authorize.date,
-    )
-    .await?;
-    let minecraft_token = minecraft_token(xbox_token.value).await?;
-
-    minecraft_entitlements(&minecraft_token.access_token).await?;
+    let tokens = super::nocturnum_auth::device_code_wait(&flow).await?;
+    let access_token =
+        super::nocturnum_auth::minecraft_access_token(&tokens.access_token)
+            .await?;
 
     let mut credentials = Credentials {
         offline_profile: MinecraftProfile::default(),
-        access_token: minecraft_token.access_token,
-        refresh_token: oauth_token.value.refresh_token,
-        expires: oauth_token.date
-            + Duration::seconds(oauth_token.value.expires_in as i64),
+        access_token,
+        refresh_token: tokens.refresh_token,
+        expires: Utc::now() + Duration::seconds(tokens.expires_in as i64),
         active: true,
     };
 
-    // During login, we need to fetch the online profile at least once to get the
-    // player UUID and name to use for the offline profile, in order for that offline
-    // profile to make sense. It's also important to modify the returned credentials
-    // object, as otherwise continued usage of it will skip the profile cache due to
-    // the dummy UUID
+    // The profile (not the entitlements: Game Pass accounts have empty ones) tells whether the game is owned.
     let online_profile = credentials
         .online_profile()
         .await
@@ -349,37 +318,18 @@ impl Credentials {
             return Ok(());
         }
 
-        let oauth_token = oauth_refresh(&self.refresh_token).await?;
-        let (pair, current_date) =
-            DeviceTokenPair::refresh_and_get_device_token(
-                oauth_token.date,
-                exec,
-            )
-            .await?;
+        // NOCTURNUM: silent refresh with our own client id
+        let tokens =
+            super::nocturnum_auth::refresh(&self.refresh_token).await?;
+        let access_token =
+            super::nocturnum_auth::minecraft_access_token(&tokens.access_token)
+                .await?;
 
-        let sisu_authorize = sisu_authorize(
-            None,
-            &oauth_token.value.access_token,
-            &pair.token.token,
-            &pair.key,
-            current_date,
-        )
-        .await?;
-
-        let xbox_token = xsts_authorize(
-            sisu_authorize.value,
-            &pair.token.token,
-            &pair.key,
-            sisu_authorize.date,
-        )
-        .await?;
-
-        let minecraft_token = minecraft_token(xbox_token.value).await?;
-
-        self.access_token = minecraft_token.access_token;
-        self.refresh_token = oauth_token.value.refresh_token;
-        self.expires = oauth_token.date
-            + Duration::seconds(oauth_token.value.expires_in as i64);
+        self.access_token = access_token;
+        if !tokens.refresh_token.is_empty() {
+            self.refresh_token = tokens.refresh_token;
+        }
+        self.expires = Utc::now() + Duration::seconds(tokens.expires_in as i64);
 
         self.upsert(exec).await?;
 
