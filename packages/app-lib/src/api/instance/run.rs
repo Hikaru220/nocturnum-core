@@ -48,6 +48,21 @@ pub async fn run(
     run_credentials(instance_id, &default_account, quick_play_type).await
 }
 
+/// NOCTURNUM: launch with a chosen account instead of the default one (several clients at once).
+#[tracing::instrument]
+pub async fn run_with_account(
+    instance_id: &str,
+    account: uuid::Uuid,
+    quick_play_type: QuickPlayType,
+) -> crate::Result<ProcessMetadata> {
+    let state = State::get().await?;
+    let users = Credentials::get_all(&state.pool).await?;
+    let (_, credentials) = users.remove(&account).context(format!(
+        "tried to launch with nonexistent account {account}"
+    ))?;
+    run_credentials(instance_id, &credentials, quick_play_type).await
+}
+
 #[tracing::instrument(skip(credentials))]
 async fn run_credentials(
     instance_id: &str,

@@ -19,3 +19,5 @@ Planned: data folder `%APPDATA%\Nocturnum` (3.3), game log reader (3.4), remove 
 
 Data folder: the app identifier passed to `State::init("Nocturnum")` gives the Nocturnum folder under the user data dir (no core change).
 Open question: `MODRINTH_LAUNCHER_META_URL` (launcher-meta.modrinth.com) is still used for version lists; clarify with Modrinth or replace with Mojang/Fabric meta (spec 3.3).
+
+| 8 | `packages/app-lib/src/api/instance/run.rs`, `api/instance.rs` | new `run_with_account` (launch with a chosen account, several clients at once) | 4 |
